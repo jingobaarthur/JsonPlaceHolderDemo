@@ -9,9 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class MainViewController: UIViewController {
-    
-    private let disposeBag = DisposeBag()
+class MainViewController: BaseViewController {
     
     fileprivate let viewModel = MainViewModel()
     
@@ -35,18 +33,11 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpUI()
-        binding()
         viewModel.getPhotosData()
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
     
-}
-extension MainViewController{
-    func setUpUI(){
+    override func setUpUI(){
+        super.setUpUI()
         title = "Json Place Holder"
         view.backgroundColor = .white
         navigationItem.searchController = searchControl
@@ -59,8 +50,8 @@ extension MainViewController{
         tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     
-    func binding(){
-        
+    override func binding(){
+        super.binding()
         viewModel.needShowPhotosDataArray.bind(to: tableView.rx.items(cellIdentifier: MainTableViewCell.cellID)){ (row, photo, cell) in
             guard let cell = cell as? MainTableViewCell else {return}
             cell.configuration(with: photo)
@@ -90,5 +81,7 @@ extension MainViewController{
             }).disposed(by: disposeBag)
         
     }
+
 }
+
 
