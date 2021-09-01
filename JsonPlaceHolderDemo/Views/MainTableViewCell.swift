@@ -23,7 +23,6 @@ class MainTableViewCell: UITableViewCell {
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 12)
         label.numberOfLines = 0
-        label.text = "Test"
         return label
     }()
     
@@ -41,6 +40,12 @@ class MainTableViewCell: UITableViewCell {
     }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imgView.image = nil
+        titleLabel.text = nil
     }
 
 }

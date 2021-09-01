@@ -14,7 +14,7 @@ class MainViewModel{
     
     var photosDataArray: [Photo] = []
     
-    var needShowPhotosDataArray: [Photo] = []
+    var needShowPhotosDataArray: PublishSubject<[Photo]> = PublishSubject()
     
     func getPhotosData(){
         APIManager.share.request(router: .photos).subscribe { [weak self] (event) in
@@ -27,7 +27,7 @@ class MainViewModel{
                         return
                     }
                     strongSelf.photosDataArray = parser
-                    //print("PhotoDataArray count:\(strongSelf.photosDataArray.count)")
+                    strongSelf.needShowPhotosDataArray.onNext(strongSelf.photosDataArray)
                 case .failure(let error):
                     print(error)
                 }
@@ -37,6 +37,22 @@ class MainViewModel{
             
         }.disposed(by: disposeBag)
         
+    }
+    
+    func search(with text: String){
+        guard !text.isEmpty else {
+            needShowPhotosDataArray.onNext(photosDataArray)
+            return
+        }
+        let filterPhotos = photosDataArray.filter {
+            $0.title.localizedStandardContains(text)
+        }
+        print("Search count: \(filterPhotos.count)")
+        needShowPhotosDataArray.onNext(filterPhotos)
+    }
+    
+    func didTappedSearchCancel(){
+        needShowPhotosDataArray.onNext(photosDataArray)
     }
     
 }
